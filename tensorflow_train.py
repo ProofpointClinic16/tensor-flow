@@ -5,14 +5,36 @@
 from __future__ import division
 import tensorflow as tf
 import numpy as np
-import os
 import matplotlib.pyplot as plt
 import time
+import parser
 
 ###################
 ### IMPORT DATA ###
 ###################
+tokens_slash = []
 
+# Insert a filename here
+data = parser.parse(filename)
+
+#This block of code tokenizes the URLs
+#that exist in 'data' by '/' and
+#creates a list to print out later
+for i in xrange(len(data)):
+    slash_split = data[i]['url'].split('/')
+    tokens_slash += [slash_split]
+
+trainX = tokens_slash
+
+trainY = []
+# Make trainY matrix
+for i in xrange(len(data)):
+    urlResult = []
+    if data[i]['result'] == 'malicious':
+        urlResult = [1, 0]
+    else:
+        urlResult = [0, 1]
+    trainY += urlResult
 
 
 #########################
@@ -198,9 +220,9 @@ for i in range(numEpochs):
 
 
 # How well do we perform on held-out test data?
-print("final accuracy on test set: %s" %str(sess.run(accuracy_OP, 
-                                                     feed_dict={X: testX, 
-                                                                yGold: testY})))
+#print("final accuracy on test set: %s" %str(sess.run(accuracy_OP,
+#                                                     feed_dict={X: testX,
+#                                                                yGold: testY})))
 
 
 ##############################
