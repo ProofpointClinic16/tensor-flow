@@ -3,6 +3,7 @@
 ################
 
 from __future__ import division
+from sklearn.feature_extraction.text import CountVectorizer
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,27 +16,38 @@ import parser
 tokens_slash = []
 
 # Insert a filename here
-data = parser.parse(filename)
+data = parser.parse('half-data.txt')
 
 #This block of code tokenizes the URLs
 #that exist in 'data' by '/' and
 #creates a list to print out later
-for i in xrange(len(data)):
+for i in range(len(data)):
     slash_split = data[i]['url'].split('/')
     tokens_slash += [slash_split]
 
-trainX = tokens_slash
+clean = []
+for element in data:
+    clean.append(element["url"].replace('http://', ''))
 
-trainY = []
+vectorizer = CountVectorizer(max_features=1000)
+
+X = vectorizer.fit_transform(clean)
+trainX = np.array(X.toarray())
+
+print(trainX.shape)
+
+Y = []
 # Make trainY matrix
-for i in xrange(len(data)):
+for i in range(len(data)):
     urlResult = []
     if data[i]['result'] == 'malicious':
-        urlResult = [1, 0]
+        urlResult = [[1, 0]]
     else:
-        urlResult = [0, 1]
-    trainY += urlResult
+        urlResult = [[0, 1]]
+    Y += urlResult
 
+trainY = np.array(Y)
+print(trainY.shape)
 
 #########################
 ### GLOBAL PARAMETERS ###
@@ -51,7 +63,7 @@ numLabels = trainY.shape[1]
 ## TRAINING SESSION PARAMETERS
 # number of times we iterate through training data
 # tensorboard shows that accuracy plateaus at ~25k epochs
-numEpochs = 27000
+numEpochs = 15000
 # a smarter learning rate for gradientOptimizer
 learningRate = tf.train.exponential_decay(learning_rate=0.0008,
                                           global_step= 1,
