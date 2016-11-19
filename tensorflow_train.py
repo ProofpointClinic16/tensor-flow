@@ -16,7 +16,7 @@ import parser
 tokens_slash = []
 
 # Insert a filename here
-data = parser.parse('half-data.txt')
+data = parser.parse('sample.txt')
 
 #This block of code tokenizes the URLs
 #that exist in 'data' by '/' and
@@ -63,7 +63,7 @@ numLabels = trainY.shape[1]
 ## TRAINING SESSION PARAMETERS
 # number of times we iterate through training data
 # tensorboard shows that accuracy plateaus at ~25k epochs
-numEpochs = 15000
+numEpochs = 7000
 # a smarter learning rate for gradientOptimizer
 learningRate = tf.train.exponential_decay(learning_rate=0.0008,
                                           global_step= 1,
