@@ -13,17 +13,9 @@ import parser
 ###################
 ### IMPORT DATA ###
 ###################
-tokens_slash = []
 
 # Insert a filename here
-data = parser.parse('sample.txt')
-
-#This block of code tokenizes the URLs
-#that exist in 'data' by '/' and
-#creates a list to print out later
-for i in range(len(data)):
-    slash_split = data[i]['url'].split('/')
-    tokens_slash += [slash_split]
+data = parser.parse('lotsodata.txt')
 
 clean = []
 for element in data:
@@ -32,7 +24,11 @@ for element in data:
 vectorizer = CountVectorizer(max_features=1000)
 
 X = vectorizer.fit_transform(clean)
-trainX = np.array(X.toarray())
+arrayX = np.array(X.toarray())
+trainTestXArray = np.array_split(arrayX, 2)
+
+trainX = trainTestXArray[0]
+testX = trainTestXArray[1]
 
 print(trainX.shape)
 
@@ -46,7 +42,12 @@ for i in range(len(data)):
         urlResult = [[0, 1]]
     Y += urlResult
 
-trainY = np.array(Y)
+arrayY = np.array(Y)
+trainTestYArray = np.array_split(arrayY, 2)
+
+trainY = trainTestYArray[0]
+testY = trainTestYArray[1]
+
 print(trainY.shape)
 
 #########################
@@ -63,7 +64,8 @@ numLabels = trainY.shape[1]
 ## TRAINING SESSION PARAMETERS
 # number of times we iterate through training data
 # tensorboard shows that accuracy plateaus at ~25k epochs
-numEpochs = 7000
+numEpochs = 10000
+
 # a smarter learning rate for gradientOptimizer
 learningRate = tf.train.exponential_decay(learning_rate=0.0008,
                                           global_step= 1,
@@ -232,9 +234,9 @@ for i in range(numEpochs):
 
 
 # How well do we perform on held-out test data?
-#print("final accuracy on test set: %s" %str(sess.run(accuracy_OP,
-#                                                     feed_dict={X: testX,
-#                                                                yGold: testY})))
+print("final accuracy on test set: %s" %str(sess.run(accuracy_OP,
+                                                     feed_dict={X: testX,
+                                                                yGold: testY})))
 
 
 ##############################
@@ -244,7 +246,7 @@ for i in range(numEpochs):
 # Create Saver
 saver = tf.train.Saver()
 # Save variables to .ckpt file
-# saver.save(sess, "trained_variables.ckpt")
+saver.save(sess, "trained_variables.ckpt")
 
 
 ############################
