@@ -4,9 +4,10 @@ from pprint import pprint
 # Size is the total number of samples in one data set
 def create_sets(filename, size=10):
 
-    training = []
-    testing = []
+    data = []
 
+    #Code has to be changed a bit below, such as size since for TFlow we don't need to create a training and testing
+    #set on our own. Consequently, the following code will be rewritten to be more clear. Direct questions to Kevin.
     malicious_training = clean_training = malicious_testing = clean_testing = size/2
 
     with open(filename) as f:
@@ -21,22 +22,19 @@ def create_sets(filename, size=10):
             datum['result'] = result
 
             if result == 'malicious' and malicious_training > 0:
-                training += [datum]
+                data += [datum]
                 malicious_training -= 1
             elif result == 'clean' and clean_training > 0:
-                training += [datum]
+                data += [datum]
                 clean_training -= 1
             elif result == 'malicious' and malicious_testing > 0:
-                testing += [datum]
+                data += [datum]
                 malicious_testing -= 1
             elif result == 'clean' and clean_testing > 0:
-                testing += [datum]
+                data += [datum]
                 clean_testing -= 1
 
             if malicious_training == 0 and clean_training == 0 and malicious_testing == 0 and clean_testing == 0:
                 break
 
-    pprint(training)
-    pprint(testing)
-
-    return (training, testing)
+    return data

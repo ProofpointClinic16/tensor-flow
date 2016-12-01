@@ -9,13 +9,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import parser
+from make_balanced_sets import create_sets
 
 ###################
 ### IMPORT DATA ###
 ###################
 
 # Insert a filename here
-data = parser.parse('lotsodata.txt')
+#data = parser.parse('lotsodata.txt')
+#Used to create data set with NUM number each of malicious and clean from file FILENAME
+#Ideally, FILENAME would be the august scans file, so on make sure this code and that file
+# exist in the same directory and then change the inputs below. If not, FILENAME can be any file
+# you want, just make sure there is NUM amounts of both malicious and clean within that file.
+data = create_sets('FILENAME', NUM)
 
 clean = []
 for element in data:
