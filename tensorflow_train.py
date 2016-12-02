@@ -21,7 +21,7 @@ from make_balanced_sets import create_sets
 #Ideally, FILENAME would be the august scans file, so on make sure this code and that file
 # exist in the same directory and then change the inputs below. If not, FILENAME can be any file
 # you want, just make sure there is NUM amounts of both malicious and clean within that file.
-data = create_sets('FILENAME', NUM)
+data = create_sets('data.txt', 3000)
 
 clean = []
 for element in data:
@@ -70,7 +70,7 @@ numLabels = trainY.shape[1]
 ## TRAINING SESSION PARAMETERS
 # number of times we iterate through training data
 # tensorboard shows that accuracy plateaus at ~25k epochs
-numEpochs = 10000
+numEpochs = 1000
 
 # a smarter learning rate for gradientOptimizer
 learningRate = tf.train.exponential_decay(learning_rate=0.0008,
