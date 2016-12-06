@@ -21,7 +21,7 @@ from make_balanced_sets import create_sets
 #Ideally, FILENAME would be the august scans file, so on make sure this code and that file
 # exist in the same directory and then change the inputs below. If not, FILENAME can be any file
 # you want, just make sure there is NUM amounts of both malicious and clean within that file.
-data = create_sets('august_scans_nosample_145970.txt', 1000)
+data = create_sets('august_scans_nosample_145970.txt', 5500)
 
 training_set = data[0]
 testing_set = data[1]
