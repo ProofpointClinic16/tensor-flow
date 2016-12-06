@@ -21,13 +21,13 @@ from make_balanced_sets import create_sets
 #Ideally, FILENAME would be the august scans file, so on make sure this code and that file
 # exist in the same directory and then change the inputs below. If not, FILENAME can be any file
 # you want, just make sure there is NUM amounts of both malicious and clean within that file.
-data = create_sets('FILENAME', NUM)
+data = create_sets('august_scans_nosample_145970.txt', 1000)
 
 training_set = data[0]
 testing_set = data[1]
 
 cleanTrain = []
-cleantTest = []
+cleanTest = []
 
 #We clean up the first element of data which is the "training" set
 # produced by create_sets
@@ -81,7 +81,7 @@ for i in range(len(testing_set)):
     if testing_set[i]['result'] == 'malicious':
         urlResult2 = [[1, 0]]
     else:
-        urlResult1 = [[0, 1]]
+        urlResult2 = [[0, 1]]
     Y2 += urlResult2
 
 trainY = np.array(Y1)
