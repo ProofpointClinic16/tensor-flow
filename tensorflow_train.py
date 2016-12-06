@@ -21,38 +21,80 @@ from make_balanced_sets import create_sets
 #Ideally, FILENAME would be the august scans file, so on make sure this code and that file
 # exist in the same directory and then change the inputs below. If not, FILENAME can be any file
 # you want, just make sure there is NUM amounts of both malicious and clean within that file.
-data = create_sets('FILENAME', NUM)
+data = create_sets('august_scans_nosample_145970.txt', 1000)
 
-clean = []
-for element in data:
-    clean.append(element["url"].replace('http://', ''))
+training_set = data[0]
+testing_set = data[1]
+
+cleanTrain = []
+cleanTest = []
+
+#We clean up the first element of data which is the "training" set
+# produced by create_sets
+for element1 in training_set:
+    cleanTrain.append(element1["url"].replace('http://', ''))
+
+#We clean up the second element of data which is the "testing" set
+# produced by create_sets
+for element2 in testing_set:
+    cleanTest.append(element2["url"].replace('http://', ''))
 
 vectorizer = CountVectorizer(max_features=1000)
 
-X = vectorizer.fit_transform(clean)
-arrayX = np.array(X.toarray())
-trainTestXArray = np.array_split(arrayX, 2)
+X1 = vectorizer.fit_transform(cleanTrain)
+X2 = vectorizer.fit_transform(cleanTest)
 
-trainX = trainTestXArray[0]
-testX = trainTestXArray[1]
+trainX = np.array(X1.toarray())
+testX = np.array(X2.toarray())
+
+#arrayX = np.array(X.toarray())
+
+#No longer need lines below since entirety of cleanTrain will be used as trainX and
+# entirety of cleantest will be used as testX
+#trainTestXArray = np.array_split(arrayX, 2)
+
+#trainX = trainTestXArray[0]
+#testX = trainTestXArray[1] 
 
 print(trainX.shape)
 
-Y = []
+Y1 = []
+Y2 = []
+
 # Make trainY matrix
-for i in range(len(data)):
-    urlResult = []
-    if data[i]['result'] == 'malicious':
-        urlResult = [[1, 0]]
+
+# the lengths of training_set and testing_set should be the same and so can possibly done
+# within the same for loop, but for now we will have separate for loops for each.
+
+# For loop for training_set
+for i in range(len(training_set)):
+    urlResult1 = []
+    if training_set[i]['result'] == 'malicious':
+        urlResult1 = [[1, 0]]
     else:
-        urlResult = [[0, 1]]
-    Y += urlResult
+        urlResult1 = [[0, 1]]
+    Y1 += urlResult1
 
-arrayY = np.array(Y)
-trainTestYArray = np.array_split(arrayY, 2)
+# For loop for testing_set
+for i in range(len(testing_set)):
+    urlResult2 = []
+    if testing_set[i]['result'] == 'malicious':
+        urlResult2 = [[1, 0]]
+    else:
+        urlResult2 = [[0, 1]]
+    Y2 += urlResult2
 
-trainY = trainTestYArray[0]
-testY = trainTestYArray[1]
+trainY = np.array(Y1)
+testY = np.array(Y2)
+
+#No longer need lines below since entirety of Y1 will be used as trainY and
+# entirety of Y2 will be used as testY
+
+#arrayY = np.array(Y)
+#trainTestYArray = np.array_split(arrayY, 2)
+
+#trainY = trainTestYArray[0]
+#testY = trainTestYArray[1]
 
 print(trainY.shape)
 
