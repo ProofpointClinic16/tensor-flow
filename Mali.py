@@ -8,6 +8,7 @@ def parse(filename):
     samples = []
     malicious_data = []
     malicious_samples = []
+    malicious_count = 0
 
     with open(filename) as f:
         count = 0
@@ -27,6 +28,10 @@ def parse(filename):
 
             if result == 'malicious':
                 malicious_data += [datum]
+                malicious_count += 1
+
+                if malicious_count > some_num/2:
+                    malicious_data = malicious_data[1:]
 
             data += [datum]
 
