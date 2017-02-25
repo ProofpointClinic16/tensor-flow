@@ -35,15 +35,22 @@ def predict(features, goldLabel):
 
 samples, malicious_samples = parser.parse("sample.txt")
 
+print "do we get here 1?"
+
 for j in range(len(samples) - 1):
     # We are using the j'th array for training, and the next one 
     # for testing
+
+    print "do we get here 2?"
+
     if j != 0:
         trainData = malicious_samples[j-1] + samples[j]
         
     else:
         trainData = samples[j]
     
+    print "do we get here 3?"
+
     testData = samples[j+1]
     print(len(trainData))
 
