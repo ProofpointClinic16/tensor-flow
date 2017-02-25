@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import Mali as parser
+import ip_mali as parser
 
        
 #method for converting tensor label to string label
@@ -33,7 +33,7 @@ def predict(features, goldLabel):
 ### IMPORT DATA ###
 ###################
 
-samples, malicious_samples = parser.parse("lotsodata.txt")
+samples, malicious_samples = parser.parse("sample.txt")
 
 for j in range(len(samples) - 1):
     # We are using the j'th array for training, and the next one 
@@ -53,9 +53,9 @@ for j in range(len(samples) - 1):
     # First must get the data into format for TF to use
     # Start with training x matrix
     cleanTrain = []
-    for element in trainData:
-        cleanTrain.append(element["url"].replace('http://', ''))
-    vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
+    #for element in trainData:
+     #   cleanTrain.append(element["url"].replace('http://', ''))
+    vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(2,4), max_features=2000)
     X1 = vectorizer1.fit_transform(cleanTrain)
     trainX = np.array(X1.toarray())
 
@@ -64,7 +64,7 @@ for j in range(len(samples) - 1):
     for element in testData:
         cleanTest.append(element["url"].replace('http://', ''))
         
-    vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
+    vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(2,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
     X2 = vectorizer2.transform(cleanTest)
     testX = np.array(X2.toarray())
 
@@ -110,7 +110,7 @@ for j in range(len(samples) - 1):
     ## TRAINING SESSION PARAMETERS
     # number of times we iterate through training data
     # tensorboard shows that accuracy plateaus at ~25k epochs
-    numEpochs = 1000
+    numEpochs = 5000
 
     # a smarter learning rate for gradientOptimizer
     learningRate = tf.train.exponential_decay(learning_rate=0.0008,
