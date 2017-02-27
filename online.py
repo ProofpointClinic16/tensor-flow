@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import Mali as parser
+import ip_mali as parser
 
        
 #method for converting tensor label to string label
@@ -33,7 +33,9 @@ def predict(features, goldLabel):
 ### IMPORT DATA ###
 ###################
 
-samples, malicious_samples = parser.parse("lotsodata.txt")
+samples, malicious_samples = parser.parse("sample.txt")
+
+print "do we get here 1?"
 
 truePos = 0
 falsePos = 0
@@ -43,12 +45,17 @@ falseNeg = 0
 for j in range(len(samples) - 1):
     # We are using the j'th array for training, and the next one 
     # for testing
+
+    print "do we get here 2?"
+
     if j != 0:
         trainData = malicious_samples[j-1] + samples[j]
         
     else:
         trainData = samples[j]
     
+    print "do we get here 3?"
+
     testData = samples[j+1]
     #print(len(testData))
 
@@ -58,12 +65,10 @@ for j in range(len(samples) - 1):
     # First must get the data into format for TF to use
     # Start with training x matrix
     cleanTrain = []
-    for element in trainData:
-        cleanTrain.append(element["ip"])
-        #cleanTrain.append(element["url"].replace('http://', ''))
 
-    vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
-    #vectorizer1 = CountVectorizer(max_features=2000)
+    #for element in trainData:
+     #   cleanTrain.append(element["url"].replace('http://', ''))
+    vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(2,4), max_features=2000)
     X1 = vectorizer1.fit_transform(cleanTrain)
     trainX = np.array(X1.toarray())
 
@@ -73,8 +78,7 @@ for j in range(len(samples) - 1):
         cleanTest.append(element["ip"])
         #cleanTrain.append(element["url"].replace('http://', ''))
         
-    vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
-    #vectorizer2 = CountVectorizer(max_features=2000, vocabulary=vectorizer1.vocabulary_)
+    vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(2,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
     X2 = vectorizer2.transform(cleanTest)
     testX = np.array(X2.toarray())
 
