@@ -35,6 +35,11 @@ def predict(features, goldLabel):
 
 samples, malicious_samples = parser.parse("lotsodata.txt")
 
+truePos = 0
+falsePos = 0
+trueNeg = 0
+falseNeg = 0
+
 for j in range(len(samples) - 1):
     # We are using the j'th array for training, and the next one 
     # for testing
@@ -45,7 +50,7 @@ for j in range(len(samples) - 1):
         trainData = samples[j]
     
     testData = samples[j+1]
-    print(len(trainData))
+    #print(len(testData))
 
     # THIS WHOLE PROCESS COULD PROBABLY BE FACTORED OUT INTO
     # ANOTHER FUNCTION
@@ -54,17 +59,22 @@ for j in range(len(samples) - 1):
     # Start with training x matrix
     cleanTrain = []
     for element in trainData:
-        cleanTrain.append(element["url"].replace('http://', ''))
+        cleanTrain.append(element["ip"])
+        #cleanTrain.append(element["url"].replace('http://', ''))
+
     vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
+    #vectorizer1 = CountVectorizer(max_features=2000)
     X1 = vectorizer1.fit_transform(cleanTrain)
     trainX = np.array(X1.toarray())
 
     # Now make testing x matrix
     cleanTest = []
     for element in testData:
-        cleanTest.append(element["url"].replace('http://', ''))
+        cleanTest.append(element["ip"])
+        #cleanTrain.append(element["url"].replace('http://', ''))
         
     vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
+    #vectorizer2 = CountVectorizer(max_features=2000, vocabulary=vectorizer1.vocabulary_)
     X2 = vectorizer2.transform(cleanTest)
     testX = np.array(X2.toarray())
 
@@ -95,6 +105,8 @@ for j in range(len(samples) - 1):
 
     print(trainX.shape)
     print(trainY.shape)
+    print(testX.shape)
+    print(testY.shape)
 
     #########################
     ### GLOBAL PARAMETERS ###
@@ -110,7 +122,7 @@ for j in range(len(samples) - 1):
     ## TRAINING SESSION PARAMETERS
     # number of times we iterate through training data
     # tensorboard shows that accuracy plateaus at ~25k epochs
-    numEpochs = 1000
+    numEpochs = 5000
 
     # a smarter learning rate for gradientOptimizer
     learningRate = tf.train.exponential_decay(learning_rate=0.0008,
@@ -268,9 +280,9 @@ for j in range(len(samples) - 1):
 
 
     # How well do we perform on held-out test data?
-    print("final accuracy on test set: %s" %str(sess.run(accuracy_OP,
-                                                         feed_dict={X: testX,
-                                                                    yGold: testY})))
+    #print("final accuracy on test set: %s" %str(sess.run(accuracy_OP,
+    #                                                     feed_dict={X: testX,
+    #                                                                yGold: testY})))
 
 
     ##############################
@@ -367,7 +379,24 @@ for j in range(len(samples) - 1):
     prediction, evaluation = sess.run([activation_OP, accuracy_OP], feed_dict={X: testX, yGold: testY})
 
     for i in range(len(testX)):
-        print("regression predicts email %s to be %s and is actually %s" %(str(i + 1), labelToString(prediction[i]), labelToString(testY[i])))
+        predictionLabel = labelToString(prediction[i])
+        actualLabel = labelToString(testY[i])
+        if(predictionLabel == "malicious"):
+            if(actualLabel == "malicious"):
+                truePos += 1
+            else:
+                falsePos += 1
+        else:
+            if(actualLabel == "malicious"):
+                falseNeg += 1
+            else:
+                trueNeg += 1
+
+        #print("regression predicts email %s to be %s and is actually %s" %(str(i + 1), labelToString(prediction[i]), labelToString(testY[i])))
+    print("Predicted Malicious & Actually Malicious: %s" %str(truePos))
+    print("Predicted Malicious & Actually Clean: %s" %str(falsePos))
+    print("Predicted Clean & Actually Malicious: %s" %str(falseNeg))
+    print("Predicted Clean & Actually Clean: %s" %str(trueNeg))
     print("overall accuracy of dataset: %s percent" %str(evaluation))
 
     tf.reset_default_graph()

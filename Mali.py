@@ -17,6 +17,7 @@ def parse(filename):
 
             result = re.search(r"result': u'(.+?)'}", line).group(1)
             url = re.search(r"url': u'(.+?)', ", line).group(1)
+            ip = re.search(r"ip': u'(.+?)', ", line).group(1)
 
             # Our regex is imperfect
             # Temporary workaround: ignore things that don't parse correctly
@@ -25,14 +26,15 @@ def parse(filename):
 
             datum['url'] = url
             datum['result'] = result
+            datum['ip'] = ip
 
             if result == 'malicious':
                 malicious_data += [datum]
                 malicious_count += 1
 
-                if malicious_count > some_num/2:
+                if malicious_count > 3*some_num/4:
                     malicious_data = malicious_data[1:]
-
+                    
             data += [datum]
 
             #increment count until we have some_num amount (1000)
