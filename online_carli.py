@@ -59,27 +59,24 @@ for j in range(len(samples) - 1):
     # Start with training x matrix
     cleanTrain = []
     for element in trainData:
-        cleanTrain.append(element["ip"])
-        #cleanTrain.append(element["url"].replace('http://', ''))
+        #cleanTrain.append(element["ip"])
+        cleanTrain.append(element["urlIP"].replace('http://', ''))
 
-    vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
-    #vectorizer1 = CountVectorizer(max_features=2000)
+    #vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
+    vectorizer1 = CountVectorizer(max_features=5000)
     X1 = vectorizer1.fit_transform(cleanTrain)
     trainX = np.array(X1.toarray())
 
     # Now make testing x matrix
     cleanTest = []
     for element in testData:
-        cleanTest.append(element["ip"])
-        #cleanTrain.append(element["url"].replace('http://', ''))
+        #cleanTest.append(element["ip"])
+        cleanTest.append(element["urlIP"].replace('http://', ''))
         
-    vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
-    #vectorizer2 = CountVectorizer(max_features=2000, vocabulary=vectorizer1.vocabulary_)
+    #vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
+    vectorizer2 = CountVectorizer(max_features=5000, vocabulary=vectorizer1.vocabulary_)
     X2 = vectorizer2.transform(cleanTest)
     testX = np.array(X2.toarray())
-
-    # NOT SURE THE ABOVE PROCESS IS WHAT WE WANT TO DO
-    # IT SEEMS WRONG TO ME
 
     # Make trainY matrix
     Y1 = []
@@ -394,9 +391,9 @@ for j in range(len(samples) - 1):
 
         #print("regression predicts email %s to be %s and is actually %s" %(str(i + 1), labelToString(prediction[i]), labelToString(testY[i])))
     print("Predicted Malicious & Actually Malicious: %s" %str(truePos))
-    print("Predicted Malicious & Actually Clean: %s" %str(falsePos))
     print("Predicted Clean & Actually Malicious: %s" %str(falseNeg))
     print("Predicted Clean & Actually Clean: %s" %str(trueNeg))
+    print("Predicted Malicious & Actually Clean: %s" %str(falsePos))
     print("overall accuracy of dataset: %s percent" %str(evaluation))
 
     tf.reset_default_graph()

@@ -28,6 +28,8 @@ def parse(filename):
             datum['result'] = result
             datum['ip'] = ip
 
+            datum['urlIP'] = url + "." + ip
+
             if result == 'malicious':
                 malicious_data += [datum]
                 malicious_count += 1
