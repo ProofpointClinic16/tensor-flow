@@ -34,7 +34,7 @@ def parse(filename):
                 malicious_data += [datum]
                 malicious_count += 1
 
-                if malicious_count > 3*some_num/4:
+                if malicious_count > 2*some_num/3:
                     malicious_data = malicious_data[1:]
                     
             data += [datum]

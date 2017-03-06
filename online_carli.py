@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import Mali_carli as parser
+import url_fullip as parser
 
        
 #method for converting tensor label to string label
@@ -33,7 +33,7 @@ def predict(features, goldLabel):
 ### IMPORT DATA ###
 ###################
 
-samples, malicious_samples = parser.parse("lotsodata.txt")
+samples, malicious_samples = parser.parse("/Users/cslaptop/Desktop/lotsodata.txt")
 
 truePos = 0
 falsePos = 0
@@ -63,7 +63,7 @@ for j in range(len(samples) - 1):
         cleanTrain.append(element["urlIP"].replace('http://', ''))
 
     #vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
-    vectorizer1 = CountVectorizer(max_features=5000)
+    vectorizer1 = CountVectorizer(max_features=2000)
     X1 = vectorizer1.fit_transform(cleanTrain)
     trainX = np.array(X1.toarray())
 
@@ -74,7 +74,7 @@ for j in range(len(samples) - 1):
         cleanTest.append(element["urlIP"].replace('http://', ''))
         
     #vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
-    vectorizer2 = CountVectorizer(max_features=5000, vocabulary=vectorizer1.vocabulary_)
+    vectorizer2 = CountVectorizer(max_features=2000, vocabulary=vectorizer1.vocabulary_)
     X2 = vectorizer2.transform(cleanTest)
     testX = np.array(X2.toarray())
 
