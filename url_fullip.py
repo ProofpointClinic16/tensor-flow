@@ -21,16 +21,16 @@ def parse(filename):
 
             finalIP = ""
             octets = ip.split('.')
-            print "the octets are ", octets
+            #print "the octets are ", octets
             for octet in octets:
-                print "the current octet is ", octet
+                #print "the current octet is ", octet
                 lengthOct = len(octet)
                 if lengthOct < 3:
                     finalIP += (3-lengthOct)*"0" + octet
                 else:
                     finalIP += octet    
 
-            print "the finalIP is ", finalIP 
+            #print "the finalIP is ", finalIP 
             # Our regex is imperfect
             # Temporary workaround: ignore things that don't parse correctly
             if result != 'malicious' and result != 'clean':

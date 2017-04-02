@@ -63,7 +63,7 @@ for j in range(len(samples) - 1):
         cleanTrain.append(element["urlIP"].replace('http://', ''))
 
     #vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
-    vectorizer1 = CountVectorizer(max_features=2000)
+    vectorizer1 = CountVectorizer(max_features=3000)
     X1 = vectorizer1.fit_transform(cleanTrain)
     trainX = np.array(X1.toarray())
 
@@ -74,7 +74,7 @@ for j in range(len(samples) - 1):
         cleanTest.append(element["urlIP"].replace('http://', ''))
         
     #vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
-    vectorizer2 = CountVectorizer(max_features=2000, vocabulary=vectorizer1.vocabulary_)
+    vectorizer2 = CountVectorizer(max_features=3000, vocabulary=vectorizer1.vocabulary_)
     X2 = vectorizer2.transform(cleanTest)
     testX = np.array(X2.toarray())
 
@@ -119,7 +119,7 @@ for j in range(len(samples) - 1):
     ## TRAINING SESSION PARAMETERS
     # number of times we iterate through training data
     # tensorboard shows that accuracy plateaus at ~25k epochs
-    numEpochs = 5000
+    numEpochs = 7000
 
     # a smarter learning rate for gradientOptimizer
     learningRate = tf.train.exponential_decay(learning_rate=0.0008,
