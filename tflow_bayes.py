@@ -12,10 +12,12 @@ def parse(filename, bayes):
 
     with open(filename) as f:
         count = 0
+        index = 0
+
+        # We go through our data 
         for line in f:
             datum = {}
 
-            #
             result = re.search(r"result': u'(.+?)'}", line).group(1)
             url = re.search(r"url': u'(.+?)', ", line).group(1)
             ip = re.search(r"ip': u'(.+?)', ", line).group(1)
@@ -35,17 +37,15 @@ def parse(filename, bayes):
             if result != 'malicious' and result != 'clean':
                 continue
 
+            floatBResult = float(bayes[count][0])
+            bayesResult = floatBResult.split('.')
+
             datum['url'] = url
             datum['result'] = result
             datum['ip'] = finalIP
 
-            if bayes[0] < 0.5:
-                datum['bayes_result'] = 'malicious'
-
-            else:
-                datum['bayes_result'] = 'clean'
-
             datum['urlIP'] = url + "." + ip
+            datum['urlIP_Bayes'] = datum['urlIP'] + "." + bayesResult[1]
 
             if result == 'malicious':
                 malicious_data += [datum]
