@@ -2,7 +2,7 @@ import re
 from copy import deepcopy
 
 
-def parse(filename):
+def parse(filename, bayes):
     data = []
     some_num = 1000
     samples = []
@@ -15,6 +15,7 @@ def parse(filename):
         for line in f:
             datum = {}
 
+            #
             result = re.search(r"result': u'(.+?)'}", line).group(1)
             url = re.search(r"url': u'(.+?)', ", line).group(1)
             ip = re.search(r"ip': u'(.+?)', ", line).group(1)
@@ -22,6 +23,7 @@ def parse(filename):
             finalIP = ""
             octets = ip.split('.')
             
+
             for octet in octets:
                 lengthOct = len(octet)
                 if lengthOct < 3:
@@ -36,6 +38,12 @@ def parse(filename):
             datum['url'] = url
             datum['result'] = result
             datum['ip'] = finalIP
+
+            if bayes[0] < 0.5:
+                datum['bayes_result'] = 'malicious'
+
+            else:
+                datum['bayes_result'] = 'clean'
 
             datum['urlIP'] = url + "." + ip
 
@@ -62,8 +70,5 @@ def parse(filename):
         #might have to change this
         if len(data) != 0:
             samples += [data]
-
-
-
 
     return (samples, malicious_samples)
