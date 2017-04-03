@@ -27,16 +27,16 @@ def parse(filename, bayesfilename):
             url = re.search(r"url': u'(.+?)', ", line).group(1)
             ip = re.search(r"ip': u'(.+?)', ", line).group(1)
 
-            finalIP = ""
-            octets = ip.split('.')
+            # finalIP = ""
+            # octets = ip.split('.')
             
-            # 
-            for octet in octets:
-                lengthOct = len(octet)
-                if lengthOct < 3:
-                    finalIP += (3-lengthOct)*"0" + octet
-                else:
-                    finalIP += octet    
+            # # 
+            # for octet in octets:
+            #     lengthOct = len(octet)
+            #     if lengthOct < 3:
+            #         finalIP += (3-lengthOct)*"0" + octet
+            #     else:
+            #         finalIP += octet    
 
             # Ignores urls with result other than "malicious" or "clean"
             if result != 'malicious' and result != 'clean':
@@ -44,28 +44,33 @@ def parse(filename, bayesfilename):
 
             # We convert any potentialy scientific number into a float
             # We remove the decimal punctuation
-            floatBResult = float(bayesArray[index][0])
-            bayesResult = floatBResult.split('.')
 
             datum['url'] = url
             datum['result'] = result
-            datum['ip'] = finalIP
+            datum['ip'] = ip
 
             datum['urlIP'] = url + "." + ip
 
             # Check if our probability from Bayes is 1
             # If so, we append only 1
             # Else, we append only what would be on the right of the decimal
-            if bayesResult[0] == '1':
-                datum['urlIP_Bayes'] = datum['urlIP'] + ".1"
-            else:
-                datum['urlIP_Bayes'] = datum['urlIP'] + "." + bayesResult[1]    
+            # if bayesResult[0] == '1':
+            #     datum['urlIP_Bayes'] = datum['urlIP'] + ".1"
+            # else:
+            if(index == 1000):
+                index = 0
+
+            floatBResult = bayesArray[index][0]
+            strBResult = str(floatBResult)
+            bayesResult = strBResult.replace('.', '')
+            bayesResult = bayesResult.replace('-', '')
+            datum['urlIP_Bayes'] = datum['urlIP'] + "." + bayesResult    
 
             if result == 'malicious':
                 malicious_data += [datum]
                 malicious_count += 1
 
-                if malicious_count > 2*some_num/3:
+                if malicious_count > 3*some_num/4:
                     malicious_data = malicious_data[1:]
                     
             data += [datum]
@@ -74,7 +79,7 @@ def parse(filename, bayesfilename):
             # Also Increment index so we move along our bayesArray
             count += 1
             index += 1
-            
+
             # Once we have some_num, we add the data to our list of samples
             if count == some_num:
                 samples += [data]
@@ -84,7 +89,7 @@ def parse(filename, bayesfilename):
                 data = []
         
         #might have to change this
-        if len(data) != 0:
-            samples += [data]
+        # if len(data) != 0:
+        #     samples += [data]
 
     return (samples, malicious_samples)

@@ -33,7 +33,7 @@ def predict(features, goldLabel):
 ### IMPORT DATA ###
 ###################
 
-samples, malicious_samples = parser.parse("/Users/cslaptop/Desktop/lotsodata.txt", "/Users/cslaptop/Desktop/nb_probs.txt")
+samples, malicious_samples = parser.parse("lotsodata.txt", "nb_probs.txt")
 
 truePos = 0
 falsePos = 0
