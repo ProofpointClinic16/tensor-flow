@@ -11,7 +11,7 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import url_fullip as parser
+import tflow_bayes as parser
 
        
 #method for converting tensor label to string label
@@ -33,7 +33,7 @@ def predict(features, goldLabel):
 ### IMPORT DATA ###
 ###################
 
-samples, malicious_samples = parser.parse("/Users/cslaptop/Desktop/lotsodata.txt")
+samples, malicious_samples = parser.parse("/Users/cslaptop/Desktop/lotsodata.txt", "/Users/cslaptop/Desktop/nb_probs.txt")
 
 truePos = 0
 falsePos = 0
@@ -60,7 +60,7 @@ for j in range(len(samples) - 1):
     cleanTrain = []
     for element in trainData:
         #cleanTrain.append(element["ip"])
-        cleanTrain.append(element["urlIP"].replace('http://', ''))
+        cleanTrain.append(element["urlIP_Bayes"].replace('http://', ''))
 
     #vectorizer1 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000)
     vectorizer1 = CountVectorizer(max_features=3000)
@@ -71,7 +71,7 @@ for j in range(len(samples) - 1):
     cleanTest = []
     for element in testData:
         #cleanTest.append(element["ip"])
-        cleanTest.append(element["urlIP"].replace('http://', ''))
+        cleanTest.append(element["urlIP_Bayes"].replace('http://', ''))
         
     #vectorizer2 = CountVectorizer(analyzer='char', ngram_range=(4,4), max_features=2000, vocabulary=vectorizer1.vocabulary_)
     vectorizer2 = CountVectorizer(max_features=3000, vocabulary=vectorizer1.vocabulary_)

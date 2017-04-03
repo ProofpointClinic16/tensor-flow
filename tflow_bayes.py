@@ -11,6 +11,7 @@ def parse(filename, bayesfilename):
     malicious_samples = []
     malicious_count = 0
 
+    # Grab
     with open(bayesfilename) as bayes_file:
         bayesArray = json.load(bayes_file)
 
