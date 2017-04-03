@@ -1,14 +1,18 @@
+import json
 import re
 from copy import deepcopy
 
 
-def parse(filename, bayes):
+def parse(filename, bayesfilename):
     data = []
     some_num = 1000
     samples = []
     malicious_data = []
     malicious_samples = []
     malicious_count = 0
+
+    with open(bayesfilename) as bayes_file:
+        bayesArray = json.load(bayes_file)
 
     with open(filename) as f:
         count = 0
@@ -25,7 +29,7 @@ def parse(filename, bayes):
             finalIP = ""
             octets = ip.split('.')
             
-
+            # 
             for octet in octets:
                 lengthOct = len(octet)
                 if lengthOct < 3:
@@ -37,7 +41,9 @@ def parse(filename, bayes):
             if result != 'malicious' and result != 'clean':
                 continue
 
-            floatBResult = float(bayes[count][0])
+            # We convert any potentialy scientific number into a float
+            # We remove the decimal punctuation
+            floatBResult = float(bayesArray[index][0])
             bayesResult = floatBResult.split('.')
 
             datum['url'] = url
@@ -45,7 +51,14 @@ def parse(filename, bayes):
             datum['ip'] = finalIP
 
             datum['urlIP'] = url + "." + ip
-            datum['urlIP_Bayes'] = datum['urlIP'] + "." + bayesResult[1]
+
+            # Check if our probability from Bayes is 1
+            # If so, we append only 1
+            # Else, we append only what would be on the right of the decimal
+            if bayesResult[0] == '1':
+                datum['urlIP_Bayes'] = datum['urlIP'] + ".1"
+            else:
+                datum['urlIP_Bayes'] = datum['urlIP'] + "." + bayesResult[1]    
 
             if result == 'malicious':
                 malicious_data += [datum]
@@ -57,7 +70,9 @@ def parse(filename, bayes):
             data += [datum]
 
             # Increment count until we have some_num amount (1000)
+            # Also Increment index so we move along our bayesArray
             count += 1
+            index += 1
             
             # Once we have some_num, we add the data to our list of samples
             if count == some_num:
