@@ -64,7 +64,7 @@ def parse(filename, bayesfilename):
             strBResult = str(floatBResult)
             bayesResult = strBResult.replace('.', '')
             bayesResult = bayesResult.replace('-', '')
-            datum['urlIP_Bayes'] = datum['urlIP'] + "." + bayesResult    
+            datum['urlIP_Bayes'] = bayesResult  + "." + datum['url']
 
             if result == 'malicious':
                 malicious_data += [datum]
