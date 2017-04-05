@@ -90,3 +90,6 @@ ENV/
 
 # TF Log Files
 summary_logs/
+
+# Don't need text files
+.txt
