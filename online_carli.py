@@ -1,5 +1,7 @@
 # This file is for running an "online" approach
 # to using TensorFlow
+# When this file is run, it prints out the current statistics of predictions
+# for the test sets
 
 ################
 ### PREAMBLE ###
@@ -245,41 +247,6 @@ for j in range(len(samples) - 1):
         else:
             # Run training step
             step = sess.run(training_OP, feed_dict={X: trainX, yGold: trainY})
-            # Report occasional stats
-            # if i % 10 == 0:
-            #     # Add epoch to epoch_values
-            #     epoch_values.append(i)
-            #     # Generate accuracy stats on test data
-            #     summary_results, train_accuracy, newCost = sess.run(
-            #         [all_summary_OPS, accuracy_OP, cost_OP], 
-            #         feed_dict={X: trainX, yGold: trainY}
-            #     )
-            #     # Add accuracy to live graphing variable
-            #     accuracy_values.append(train_accuracy)
-            #     # Add cost to live graphing variable
-            #     cost_values.append(newCost)
-            #     # Write summary stats to writer
-            #     writer.add_summary(summary_results, i)
-            #     # Re-assign values for variables
-            #     diff = abs(newCost - cost)
-            #     cost = newCost
-
-            #     #generate print statements
-            #     print("step %d, training accuracy %g"%(i, train_accuracy))
-            #     print("step %d, cost %g"%(i, newCost))
-            #     print("step %d, change in cost %g"%(i, diff))
-
-            #     # Plot progress to our two subplots
-            #     accuracyLine, = ax1.plot(epoch_values, accuracy_values)
-            #     costLine, = ax2.plot(epoch_values, cost_values)
-            #     fig.canvas.draw()
-            #     time.sleep(1)
-
-
-    # How well do we perform on held-out test data?
-    #print("final accuracy on test set: %s" %str(sess.run(accuracy_OP,
-    #                                                     feed_dict={X: testX,
-    #                                                                yGold: testY})))
 
 
     ##############################
