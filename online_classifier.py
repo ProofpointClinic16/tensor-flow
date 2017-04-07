@@ -103,9 +103,6 @@ for j in range(len(samples) - 1):
     testY = np.array(Y2)
 
     print(trainX.shape)
-    print(trainY.shape)
-    print(testX.shape)
-    print(testY.shape)
 
     #########################
     ### GLOBAL PARAMETERS ###
@@ -187,23 +184,6 @@ for j in range(len(samples) - 1):
     # OPTIMIZATION ALGORITHM i.e. GRADIENT DESCENT
     training_OP = tf.train.GradientDescentOptimizer(learningRate).minimize(cost_OP)
 
-    ###########################
-    ### GRAPH LIVE UPDATING ###
-    ###########################
-
-    # epoch_values=[]
-    # accuracy_values=[]
-    # cost_values=[]
-    # # Turn on interactive plotting
-    # plt.ion()
-    # # Create the main, super plot
-    # fig = plt.figure()
-    # # Create two subplots on their own axes and give titles
-    # ax1 = plt.subplot("211")
-    # ax1.set_title("TRAINING ACCURACY", fontsize=18)
-    # ax2 = plt.subplot("212")
-    # ax2.set_title("TRAINING COST", fontsize=18)
-    # plt.tight_layout()
 
     #####################
     ### RUN THE GRAPH ###
@@ -214,26 +194,6 @@ for j in range(len(samples) - 1):
 
     # Initialize all tensorflow variables
     sess.run(init_OP)
-
-    ## Ops for vizualization
-    # argmax(activation_OP, 1) gives the label our model thought was most likely
-    # argmax(yGold, 1) is the correct label
-    correct_predictions_OP = tf.equal(tf.argmax(activation_OP,1),tf.argmax(yGold,1))
-    # False is 0 and True is 1, what was our average?
-    accuracy_OP = tf.reduce_mean(tf.cast(correct_predictions_OP, "float"))
-    # Summary op for regression output
-    activation_summary_OP = tf.histogram_summary("output", activation_OP)
-    # Summary op for accuracy
-    accuracy_summary_OP = tf.scalar_summary("accuracy", accuracy_OP)
-    # Summary op for cost
-    cost_summary_OP = tf.scalar_summary("cost", cost_OP)
-    # Summary ops to check how variables (W, b) are updating after each iteration
-    weightSummary = tf.histogram_summary("weights", weights.eval(session=sess))
-    biasSummary = tf.histogram_summary("biases", bias.eval(session=sess))
-    # Merge all summaries
-    all_summary_OPS = tf.merge_all_summaries()
-    # Summary writer
-    writer = tf.train.SummaryWriter("summary_logs", sess.graph_def)
 
     # Initialize reporting variables
     cost = 0
