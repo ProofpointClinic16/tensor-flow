@@ -2,12 +2,16 @@ from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 import tensorflow as tf
 import parser
+from make_balanced_sets import create_sets
 
 
 ###################
 ### IMPORT DATA ###
 ###################
 
+#Comment block below is original code used but is now replaced with the code immediately
+# following it, up to Global Variables section.
+'''
 # Insert a filename here
 data = parser.parse('lotsodata.txt')
 
@@ -39,6 +43,54 @@ trainTestYArray = np.array_split(arrayY, 2)
 
 trainY = trainTestYArray[0]
 testY = trainTestYArray[1]
+'''
+
+#Code below is taken from modified tensorflow_train.py
+data = create_sets('august_scans_nosample_145970.txt', 5500)
+
+training_set = data[0]
+testing_set = data[1]
+
+cleanTrain = []
+cleanTest = []
+
+for element1 in training_set:
+    cleanTrain.append(element1["url"].replace('http://', ''))
+
+
+for element2 in testing_set:
+    cleanTest.append(element2["url"].replace('http://', ''))
+
+vectorizer = CountVectorizer(max_features=1000)
+
+X1 = vectorizer.fit_transform(cleanTrain)
+X2 = vectorizer.fit_transform(cleanTest)
+
+trainX = np.array(X1.toarray())
+testX = np.array(X2.toarray())
+
+
+Y1 = []
+Y2 = []
+
+for i in range(len(training_set)):
+    urlResult1 = []
+    if training_set[i]['result'] == 'malicious':
+        urlResult1 = [[1, 0]]
+    else:
+        urlResult1 = [[0, 1]]
+    Y1 += urlResult1
+
+for i in range(len(testing_set)):
+    urlResult2 = []
+    if testing_set[i]['result'] == 'malicious':
+        urlResult2 = [[1, 0]]
+    else:
+        urlResult2 = [[0, 1]]
+    Y2 += urlResult2
+
+trainY = np.array(Y1)
+testY = np.array(Y2)
 
 #########################
 ### GLOBAL PARAMETERS ###
